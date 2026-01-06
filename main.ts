@@ -2,7 +2,7 @@ import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSetti
 import CalendarHeatmap, { CalendarHeatmapOptions } from './calendar-heatmap/index.js';
 import { hasTodayEntry, insertTodayEntry, parseEntries } from './utils';
 import { computeDailyOverview, renderDailyOverview, updateDailyOverview } from './daily-overview';
-import { createTranslator, isLanguageSetting, LanguageSetting, LocaleCode, LocaleKey, resolveLocale, Translator } from './locales';
+import { createTranslator, LocaleCode, LocaleKey, normalizeLocaleCode, Translator } from './locales';
 
 export default class EasyTrackerPlugin extends Plugin {
 	settings: EasyTrackerPluginSettings;
@@ -21,16 +21,11 @@ export default class EasyTrackerPlugin extends Plugin {
 	}
 
 	public refreshLocale(): void {
-		const resolved = resolveLocale(this.settings.language, this.getSystemLocale());
+		const resolved = normalizeLocaleCode(this.getSystemLocale());
+		console.log(`easy-tracker: resolved locale "${resolved}", this.getSystemLocale(): "${this.getSystemLocale()}"`);
 		this.locale = resolved;
 		this.translator = createTranslator(resolved);
 		this.updateOverviews();
-	}
-
-	public async updateLanguage(language: LanguageSetting): Promise<void> {
-		this.settings.language = language;
-		await this.saveSettings();
-		this.refreshLocale();
 	}
 
 	// Get the active Markdown view or notify the user
@@ -277,7 +272,6 @@ export default class EasyTrackerPlugin extends Plugin {
 		const migrated = typeof legacy !== 'undefined'
 			? (parseInt(String(legacy)) === 0 ? 0 : 1)
 			: undefined;
-		const language: LanguageSetting = isLanguageSetting(data?.language) ? data.language : DEFAULT_SETTINGS.language;
 		const overrides: Partial<EasyTrackerPluginSettings> = {};
 
 		if (typeof data?.weekStart === 'number') {
@@ -291,7 +285,6 @@ export default class EasyTrackerPlugin extends Plugin {
 		this.settings = {
 			...DEFAULT_SETTINGS,
 			...overrides,
-			language,
 		};
 	}
 
@@ -303,12 +296,10 @@ export default class EasyTrackerPlugin extends Plugin {
 // Plugin settings: weekStart (0 = Sunday, 1 = Monday)
 interface EasyTrackerPluginSettings {
 	weekStart: 0 | 1;
-	language: LanguageSetting;
 }
 
 const DEFAULT_SETTINGS: EasyTrackerPluginSettings = {
 	weekStart: 1,
-	language: 'system',
 };
 
 class EasyTrackerSettingTab extends PluginSettingTab {
@@ -322,21 +313,6 @@ class EasyTrackerSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-
-			new Setting(containerEl)
-				.setName(this.plugin.t('setting.languageName'))
-				.setDesc(this.plugin.t('setting.languageDescription'))
-				.addDropdown(drop => {
-					drop.addOption('system', this.plugin.t('setting.languageOption.system'));
-					drop.addOption('en', this.plugin.t('setting.languageOption.en'));
-					drop.addOption('zh-CN', this.plugin.t('setting.languageOption.zhCN'));
-					drop.setValue(this.plugin.settings.language);
-					drop.onChange(async (value) => {
-						const next = isLanguageSetting(value) ? value : 'system';
-						await this.plugin.updateLanguage(next);
-						this.display();
-					});
-				});
 
 			new Setting(containerEl)
 				.setName(this.plugin.t('setting.weekStartName'))
