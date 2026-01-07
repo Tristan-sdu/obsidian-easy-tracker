@@ -37,6 +37,6 @@ All data is stored as plain text in your note—easy to search, sync, or edit.
 
 - Edit button labels/values by changing the text inside the block.
 - Move or remove modules as you wish.
-- Adjust language and week start in **Settings → Easy Tracker**.
+- Adjust week start in **Settings → Easy Tracker**.
 
 No complex setup—just insert, click, and track.

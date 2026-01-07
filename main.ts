@@ -20,7 +20,6 @@ export default class EasyTrackerPlugin extends Plugin {
 
 	public refreshLocale(): void {
 		const resolved = normalizeLocaleCode(this.getSystemLocale());
-		console.log(`easy-tracker: resolved locale "${resolved}", this.getSystemLocale(): "${this.getSystemLocale()}"`);
 		this.locale = resolved;
 		this.translator = createTranslator(resolved);
 		this.triggerRefresh();
