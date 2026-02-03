@@ -3,6 +3,7 @@ import type EasyTrackerPlugin from "./main";
 import CalendarHeatmap, { CalendarHeatmapOptions } from './calendar-heatmap/index.js';
 import { parseEntries } from './utils';
 import { computeDailyOverview, buildDailyOverview } from './daily-overview';
+import { CustomValueModal } from "./custom-value-modal";
 
 export class HeatmapRenderChild extends MarkdownRenderChild {
     plugin: EasyTrackerPlugin;
@@ -38,7 +39,7 @@ export class HeatmapRenderChild extends MarkdownRenderChild {
         this.container.empty();
         const data = parseEntries(this.plugin.getActiveContent());
         const options = this.parseHeatmapOptions(this.source);
-        
+
         const cardTitle = this.container.createDiv({ cls: 'easy-tracker-card' });
         cardTitle.createEl('div', { cls: 'easy-tracker-card-title', text: this.plugin.t('card.activityHistoryTitle') });
         const heatmapElement = cardTitle.createDiv({ cls: 'easy-tracker-year-calendar-heatmap' });
@@ -133,9 +134,15 @@ export class ButtonsRenderChild extends MarkdownRenderChild {
             btn.buttonEl.addClass("btn");
             btn.setButtonText(text || this.plugin.t('card.defaultButton'));
             btn.onClick(() => {
-                const n = Number(val);
-                const valueToInsert = Number.isFinite(n) ? n : index + 1; 
-                this.plugin.insertEntry(valueToInsert);
+                if (val === '?') {
+                    new CustomValueModal(this.plugin.app, this.plugin, (customVal) => {
+                        this.plugin.insertEntry(customVal);
+                    }).open();
+                } else {
+                    const n = Number(val);
+                    const valueToInsert = Number.isFinite(n) ? n : index + 1;
+                    this.plugin.insertEntry(valueToInsert);
+                }
             });
         }
     }

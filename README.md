@@ -35,8 +35,8 @@ All data is stored as plain text in your note—easy to search, sync, or edit.
 
 ## Customization
 
-- Edit button labels/values by changing the text inside the block.
-- Move or remove modules as you wish.
-- Adjust week start in **Settings → Easy Tracker**.
+- Edit the button block content to customize labels and values. Use `Your Label | ?` syntax to prompt for a custom value when clicked.
+- Modules can be moved, added, or removed as needed.
+- Toggle between Monday and Sunday as the start of the week in **Settings → Easy Tracker**.
 
 No complex setup—just insert, click, and track.
