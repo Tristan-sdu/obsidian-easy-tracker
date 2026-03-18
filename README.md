@@ -27,8 +27,8 @@ Track progress toward a single goal directly inside one file—just insert the r
 ## Modules
 
 - **Daily overview**: Shows today's status, streak, and last missed day.
-- **Year calendar heatmap**: Visualizes your annual progress.
-- **Check-in buttons**: One-click logging; labels and values are editable.
+- **Year calendar heatmap**: Visualizes your annual progress with daily aggregated values (multiple entries on the same day are merged).
+- **Check-in buttons**: One-click logging; labels and values are editable, and today's card shows your accumulated total for the day after check-ins.
 - **Goal card**: Displays your motivational message.
 
 All data is stored as plain text in your note—easy to search, sync, or edit.
